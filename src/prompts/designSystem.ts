@@ -110,6 +110,26 @@ async function promptPresetSelection(options: {
 
 type PromptChoice = { name: string; value: string };
 
+async function promptSinglePresetCheckboxSelection(options: {
+  message: string;
+  presets: string[];
+  defaultChoice?: string;
+}): Promise<string> {
+  const isKnown = options.defaultChoice ? options.presets.includes(options.defaultChoice) : true;
+  const choices = options.defaultChoice && !isKnown ? [options.defaultChoice, ...options.presets] : options.presets;
+  const answer = await inquirer.prompt<{ value: string[] }>([
+    {
+      type: "checkbox",
+      name: "value",
+      message: options.message,
+      choices,
+      default: options.defaultChoice ? [options.defaultChoice] : [],
+      validate: (value: unknown[]) => value.length === 1 || "Select exactly one option."
+    }
+  ]);
+  return answer.value[0];
+}
+
 async function promptSingleCheckboxChoice(options: {
   message: string;
   choices: PromptChoice[];
@@ -385,12 +405,10 @@ const DONT_RULE_OPTIONS = [
 async function promptTypographyGuidance(current?: string): Promise<string> {
   const parsed = splitGuidanceMeta(current ?? "");
   const defaults = matchPresetDefaults(parsed.keywords, TYPOGRAPHY_SCALE_OPTIONS);
-
-  const scaleValues = await promptPresetSelection({
+  const scaleValue = await promptSinglePresetCheckboxSelection({
     message: "Select typography scale strategy:",
     presets: TYPOGRAPHY_SCALE_OPTIONS,
-    defaultSelected: defaults.selected.length > 0 ? defaults.selected : ["12/14/16/20/24/32"],
-    defaultCustom: defaults.custom
+    defaultChoice: defaults.selected[0] ?? defaults.custom[0] ?? "12/14/16/20/24/32"
   });
 
   const primaryFont = await promptFontSelection({
@@ -417,7 +435,7 @@ async function promptTypographyGuidance(current?: string): Promise<string> {
   });
 
   return (
-    `${scaleValues.join(", ")} | Fonts: primary=${primaryFont}, ` +
+    `${scaleValue} | Fonts: primary=${primaryFont}, ` +
     `display=${secondaryFont}, mono=${monoFont} | ` +
     `weights=${fontWeights.join(", ")}`
   );
@@ -540,10 +558,10 @@ export async function promptDesignSystem(defaultProductName = "typeui.sh"): Prom
   });
   const typographyScale = await promptTypographyGuidance();
   const colorPalette = await promptColorPaletteGuidance();
-  const spacingScale = await promptPresetSelection({
+  const spacingScale = await promptSinglePresetCheckboxSelection({
     message: "Select spacing scale guidance:",
     presets: SPACING_SCALE_OPTIONS,
-    defaultSelected: ["4/8/12/16/24/32"]
+    defaultChoice: "4/8/12/16/24/32"
   });
   const componentFamilies = await promptPresetSelection({
     message: "Select component families to prioritize:",
@@ -585,7 +603,7 @@ export async function promptDesignSystem(defaultProductName = "typeui.sh"): Prom
     visualStyle: visualStyle.join(", "),
     typographyScale,
     colorPalette,
-    spacingScale: spacingScale.join(", "),
+    spacingScale,
     componentFamilies,
     accessibilityRequirements: accessibilityRequirements.join(", "),
     writingTone: writingTone.join(", "),
@@ -661,13 +679,12 @@ export async function promptDesignSystemUpdates(
       }
       case "spacingScale": {
         const defaults = matchPresetDefaults(current.spacingScale, SPACING_SCALE_OPTIONS);
-        const values = await promptPresetSelection({
+        const value = await promptSinglePresetCheckboxSelection({
           message: "Select spacing scale guidance:",
           presets: SPACING_SCALE_OPTIONS,
-          defaultSelected: defaults.selected,
-          defaultCustom: defaults.custom
+          defaultChoice: defaults.selected[0] ?? defaults.custom[0] ?? "4/8/12/16/24/32"
         });
-        updates.spacingScale = values.join(", ");
+        updates.spacingScale = value;
         break;
       }
       case "componentFamilies": {
