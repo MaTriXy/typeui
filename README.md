@@ -2,13 +2,7 @@
 
 [![typeui CLI screenshot](https://flowbite.s3.us-east-1.amazonaws.com/github/typeui.png)](https://www.typeui.sh)
 
-[typeui.sh](https://www.typeui.sh) is a CLI that interviews you about your design system and generates `SKILL.md` files for AI coding agents.
-
-## Get a license
-
-You can purchase a license at [https://typeui.sh](https://typeui.sh).
-
-To use this CLI legally, each user must have a valid purchased license key.
+[typeui.sh](https://www.typeui.sh) is a CLI that allows you to generate, manage and pull design system specifications locally for your agentic tools such as Claude Code, OpenCode, Codex, and Cursor.
 
 ## Install and run
 
@@ -95,14 +89,8 @@ Generated files include these managed markers:
 
 `typeui.sh update` only replaces content inside that managed block.
 
-## End-user guide
+## Get a license
 
-For a full walkthrough (license activation and every prompt step), see `README.user.md`.
+You can purchase a license at [https://typeui.sh](https://typeui.sh).
 
-## Development
-
-```bash
-npm run typecheck
-npm run test
-npm run build
-```
+To use this CLI legally, each user must have a valid purchased license key.
