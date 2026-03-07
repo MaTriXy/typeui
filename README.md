@@ -1,33 +1,32 @@
-# typeui.sh
+```
+████████╗██╗   ██╗██████╗ ███████╗██╗   ██╗██╗   ███████╗██╗  ██╗
+╚══██╔══╝╚██╗ ██╔╝██╔══██╗██╔════╝██║   ██║██║   ██╔════╝██║  ██║
+   ██║    ╚████╔╝ ██████╔╝█████╗  ██║   ██║██║   ███████╗███████║
+   ██║     ╚██╔╝  ██╔═══╝ ██╔══╝  ██║   ██║██║   ╚════██║██╔══██║
+   ██║      ██║   ██║     ███████╗╚██████╔╝██║██╗███████║██║  ██║
+   ╚═╝      ╚═╝   ╚═╝     ╚══════╝ ╚═════╝ ╚═╝╚═╝╚══════╝╚═╝  ╚═╝
 
-[![typeui CLI screenshot](https://flowbite.s3.us-east-1.amazonaws.com/github/typeui.png)](https://www.typeui.sh)
+Design system skill generator for agentic tools (ie. Claude Code, Open Code, Codex, Cursor, etc)
+```
 
-[typeui.sh](https://www.typeui.sh) is a CLI that allows you to generate, manage and pull design system specifications locally for your agentic tools such as Claude Code, OpenCode, Codex, and Cursor.
+[typeui.sh](https://www.typeui.sh) is an open-source command line interface (CLI) that generates, updates, and can download skill.md files with design system specifications to instruct agentic tools and LLM's to use a certain design when building interfaces.
 
-## Install and run
+## Getting started
 
-Use with `npx`:
+You can start building with TypeUI by using the NPX command:
 
 ```bash
 npx typeui.sh --help
 ```
 
-For local development:
+## Available commands
 
-```bash
-npm install
-npm run build
-node dist/cli.js --help
-```
-
-## Commands
-
-- `typeui.sh verify` - verify your license key and cache local license status.
-- `typeui.sh license` - show local cached license status.
-- `typeui.sh generate` - run the interactive design-system prompts and generate skill files.
+- `typeui.sh generate` - run the interactive design system prompts and generate skill files.
 - `typeui.sh update` - update existing managed skill content in generated files.
 - `typeui.sh pull <slug>` - pull a registry skill and write it to selected provider paths.
 - `typeui.sh list` - choose one available registry spec, then pull it automatically.
+- `typeui.sh verify` - verify your license key (pro version) and cache local license status.
+- `typeui.sh license` - show local cached license status.
 - `typeui.sh clear-cache` - remove local cache state (`~/.typeui-sh`).
 
 Shared options for `generate` and `update`:
@@ -45,52 +44,22 @@ Shared options for `list`:
 - `-p, --providers <providers>` (comma-separated providers passed through to auto-pull)
 - `--dry-run` (preview pull file changes without writing)
 
-Examples:
+For local development:
 
 ```bash
-npx typeui.sh verify
-npx typeui.sh generate
-npx typeui.sh update --dry-run
-npx typeui.sh pull paper
-npx typeui.sh pull paper --providers cursor,claude-code
-npx typeui.sh list
-npx typeui.sh list --providers cursor,codex --dry-run
-npx typeui.sh generate --providers cursor,claude-code,mistral-vibe
+npm install
+npm run build
+node dist/cli.js --help
 ```
 
-## Registry API docs
+## License
 
-Request-level details for `pull` and `list` live in `README.registry-api.md`.
+The CLI is open-source under the MIT License.
 
-## Generated files
+## Pro version
 
-Universal target (always included):
+You can consider purchasing the [pro version](https://www.typeui.sh/#pricing) to get access to curated design system skill files and support our work.
 
-- `.agents/skills/design-system/SKILL.md`
+## Sponsors
 
-Optional additional targets can be selected interactively or via `--providers`.
-Each generated file path ends with:
-
-- `.../skills/design-system/SKILL.md`
-
-Common examples:
-
-- `.cursor/skills/design-system/SKILL.md`
-- `.claude/skills/design-system/SKILL.md`
-- `.codex/skills/design-system/SKILL.md`
-- `.opencode/skills/design-system/SKILL.md`
-
-## Safe updates
-
-Generated files include these managed markers:
-
-- `<!-- TYPEUI_SH_MANAGED_START -->`
-- `<!-- TYPEUI_SH_MANAGED_END -->`
-
-`typeui.sh update` only replaces content inside that managed block.
-
-## Get a license
-
-You can purchase a license at [https://typeui.sh](https://typeui.sh).
-
-To use this CLI legally, each user must have a valid purchased license key.
+If you'd like to become a sponsor of the project, please [contact us](https://www.bergside.com/contact) on our company website.
