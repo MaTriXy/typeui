@@ -19,6 +19,10 @@
     "prepack": "npm run build",
     "release:check": "npm run typecheck && npm run test && npm pack --dry-run"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bergside/typeui.sh"
+  },
   "keywords": [
     "cli",
     "design-system",
@@ -26,7 +30,7 @@
     "ai"
   ],
   "author": "https://bergside.com",
-  "license": "LICENSE.md",
+  "license": "MIT License",
   "type": "commonjs",
   "engines": {
     "node": ">=18"
