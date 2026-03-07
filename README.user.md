@@ -12,7 +12,7 @@ This guide is for end users who run the `typeui.sh` CLI in a project to generate
 ## Before you start
 
 - Node.js 18+ recommended
-- A valid license key from your Polar purchase
+- A valid license key from your Polar purchase (required for `pull` and `list`; not required for `generate` or `update`)
 
 ## Install and run
 
@@ -28,7 +28,7 @@ Or if the package is already installed globally:
 typeui.sh --help
 ```
 
-## License key activation (Polar purchase)
+## License key activation for registry commands (Polar purchase)
 
 ### 1) Get your license key
 
@@ -40,7 +40,7 @@ After purchase, Polar provides your license key. Copy it exactly.
 
 - `https://typeui.sh/api/license/verify`
 
-### 3) Activate in CLI
+### 3) Activate in CLI (for `pull` and `list`)
 
 Run:
 
@@ -61,7 +61,7 @@ Useful license commands:
 - `npx typeui.sh license` - show cached license status
 - `npx typeui.sh clear-cache` - clear local cache and force re-verification
 
-## Generate design-system skills
+## Generate design-system skills (free)
 
 Run:
 
@@ -109,7 +109,7 @@ You will be prompted for:
 
 ## Update existing skill files
 
-If files already exist, you can update selected design-system fields:
+If files already exist, you can update selected design-system fields (free):
 
 ```bash
 npx typeui.sh update
@@ -133,6 +133,7 @@ Behavior:
 
 - The CLI asks for provider targets the same way as `generate/update` (unless `--providers` is passed).
 - Universal target is always included.
+- This command requires an activated license.
 - The CLI uses the cached license key if present; otherwise it prompts for one and verifies it.
 - The CLI sends `POST /api/registry/pull/:slug` with `{ "licenseKey": "..." }`.
 - On success, the pulled markdown is written to selected provider `SKILL.md` paths.
@@ -154,6 +155,7 @@ npx typeui.sh list
 
 Behavior:
 
+- This command requires an activated license.
 - The CLI uses your cached license key when available; otherwise it prompts and verifies.
 - The CLI sends `POST /api/registry/specs` with `{ "licenseKey": "..." }`.
 - On success, it shows a checkbox selection where exactly one spec can be selected.

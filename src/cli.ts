@@ -3,7 +3,6 @@ import path from "node:path";
 import { Command } from "commander";
 import {
   clearCachedLicenseState,
-  ensureVerifiedAccess,
   getVerifiedLicenseKey,
   getCachedLicenseSummary,
   verifyAndCacheLicenseFromPrompt
@@ -55,7 +54,6 @@ function printResults(mode: "generated" | "updated" | "preview" | "pulled", resu
 }
 
 async function generateLike(mode: "generated" | "updated" | "preview", options: { providers?: string; dryRun?: boolean }) {
-  await ensureVerifiedAccess();
   const selectedProviders = parseProviderOption(options.providers) ?? (await promptProviders());
   const providers = [...new Set<Provider>([...ALWAYS_INCLUDED_PROVIDERS, ...selectedProviders])];
   let designSystem: DesignSystemInput;
