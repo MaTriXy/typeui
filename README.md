@@ -58,7 +58,7 @@ The CLI is open-source under the MIT License.
 
 ## Pro version
 
-You can consider purchasing the [pro version](https://www.typeui.sh/#pricing) to get access to curated design system skill files and support our work.
+Get access to curated design system files by getting the [pro version](https://www.typeui.sh/#pricing) and supporting our work.
 
 ## Sponsors
 
