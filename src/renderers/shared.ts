@@ -1,5 +1,6 @@
 import { MANAGED_BLOCK_END, MANAGED_BLOCK_START } from "../config";
-import { DesignSystemInput } from "../types";
+import { SKILL_AUTHOR } from "../skillMetadata";
+import { DesignSystemInput, SkillMetadata } from "../types";
 
 function list(items: string[]): string {
   return items.map((item) => `- ${item}`).join("\n");
@@ -81,4 +82,27 @@ export function createManagedSkillBody(providerTitle: string, design: DesignSyst
     "",
     MANAGED_BLOCK_END
   ].join("\n");
+}
+
+function escapeYamlString(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+export function createSkillFrontmatter(metadata: SkillMetadata): string {
+  return [
+    "---",
+    `name: "${escapeYamlString(metadata.name)}"`,
+    `description: "${escapeYamlString(metadata.description)}"`,
+    "metadata:",
+    `  author: ${escapeYamlString(SKILL_AUTHOR)}`,
+    "---"
+  ].join("\n");
+}
+
+export function createManagedSkillFile(
+  providerTitle: string,
+  design: DesignSystemInput,
+  metadata: SkillMetadata
+): string {
+  return `${createSkillFrontmatter(metadata)}\n\n${createManagedSkillBody(providerTitle, design)}`;
 }

@@ -165,6 +165,11 @@ export interface DesignSystemInput {
   dontRules: string[];
 }
 
+export interface SkillMetadata {
+  name: string;
+  description: string;
+}
+
 export const DESIGN_SYSTEM_FIELDS = [
   "productName",
   "brandSummary",

@@ -1,7 +1,8 @@
 type InquirerModule = typeof import("inquirer");
 import {
   DesignSystemSchema,
-  ProviderSelectionSchema
+  ProviderSelectionSchema,
+  SkillMetadataSchema
 } from "../domain/designSystemSchema";
 import {
   ALWAYS_INCLUDED_PROVIDERS,
@@ -10,6 +11,7 @@ import {
   OPTIONAL_PROVIDERS,
   PROVIDER_DETAILS,
   Provider,
+  SkillMetadata,
   SUPPORTED_PROVIDERS
 } from "../types";
 
@@ -649,9 +651,8 @@ export async function promptDesignSystemFields(): Promise<DesignSystemField[]> {
     {
       type: "checkbox",
       name: "fields",
-      message: "Select fields to update:",
-      choices: designFieldChoices,
-      validate: (value: unknown[]) => value.length > 0 || "Select at least one field."
+      message: "Select design fields to update (optional):",
+      choices: designFieldChoices
     }
   ]);
 
@@ -781,6 +782,34 @@ export async function promptDesignSystemUpdates(
   }
 
   return validatedUpdates;
+}
+
+export async function promptSkillMetadata(defaults?: Partial<SkillMetadata>): Promise<SkillMetadata> {
+  const answers = await prompt<{ name: string; description: string }>([
+    {
+      type: "input",
+      name: "name",
+      message: "Skill name (slug, e.g. next-best-practices):",
+      default: defaults?.name ?? "design-system",
+      validate: (value: string) =>
+        SkillMetadataSchema.pick({ name: true }).safeParse({ name: value }).success ||
+        "Use lowercase letters, numbers, dashes, or underscores."
+    },
+    {
+      type: "input",
+      name: "description",
+      message: "Skill description (single line):",
+      default: defaults?.description ?? "",
+      validate: (value: string) =>
+        SkillMetadataSchema.pick({ description: true }).safeParse({ description: value }).success ||
+        "Description must be a single non-empty line."
+    }
+  ]);
+
+  return SkillMetadataSchema.parse({
+    name: answers.name,
+    description: answers.description
+  });
 }
 
 export function listSupportedProviders(): readonly string[] {

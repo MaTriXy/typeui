@@ -1,4 +1,4 @@
-import { DesignSystemInput, Provider } from "../types";
+import { DesignSystemInput, Provider, SkillMetadata } from "../types";
 import { upsertManagedSkillFile } from "../io/updateSkillFile";
 import { renderProviderFiles } from "../renderers";
 
@@ -6,6 +6,7 @@ export interface GenerationOptions {
   projectRoot: string;
   providers: Provider[];
   designSystem: DesignSystemInput;
+  metadata: SkillMetadata;
   dryRun?: boolean;
 }
 
@@ -15,7 +16,7 @@ export interface GenerationResult {
 }
 
 export async function runGeneration(options: GenerationOptions): Promise<GenerationResult[]> {
-  const providerFiles = renderProviderFiles(options.designSystem, options.providers);
+  const providerFiles = renderProviderFiles(options.designSystem, options.providers, options.metadata);
   const results: GenerationResult[] = [];
 
   for (const file of providerFiles) {

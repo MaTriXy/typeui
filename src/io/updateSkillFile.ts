@@ -2,6 +2,37 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { MANAGED_BLOCK_END, MANAGED_BLOCK_START } from "../config";
 
+function extractManagedBlock(content: string): string | null {
+  const startIdx = content.indexOf(MANAGED_BLOCK_START);
+  const endIdx = content.indexOf(MANAGED_BLOCK_END);
+  if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) {
+    return null;
+  }
+  return content.slice(startIdx, endIdx + MANAGED_BLOCK_END.length);
+}
+
+function extractFrontmatter(content: string): string | null {
+  const match = content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/);
+  return match?.[0] ?? null;
+}
+
+function removeLeadingFrontmatter(content: string): string {
+  const frontmatter = extractFrontmatter(content);
+  if (!frontmatter) {
+    return content;
+  }
+  return content.slice(frontmatter.length);
+}
+
+function applyFrontmatter(content: string, frontmatter: string): string {
+  const withoutFrontmatter = removeLeadingFrontmatter(content).trimStart();
+  const normalizedFrontmatter = frontmatter.trimEnd();
+  if (!withoutFrontmatter) {
+    return `${normalizedFrontmatter}\n`;
+  }
+  return `${normalizedFrontmatter}\n\n${withoutFrontmatter}`;
+}
+
 function mergeWithManagedBlock(existing: string, generatedBlock: string): string {
   const startIdx = existing.indexOf(MANAGED_BLOCK_START);
   const endIdx = existing.indexOf(MANAGED_BLOCK_END);
@@ -24,7 +55,7 @@ function mergeWithManagedBlock(existing: string, generatedBlock: string): string
 export async function upsertManagedSkillFile(
   projectRoot: string,
   relativePath: string,
-  generatedBlock: string,
+  generatedContent: string,
   dryRun = false
 ): Promise<{ absPath: string; changed: boolean }> {
   const absPath = path.resolve(projectRoot, relativePath);
@@ -40,7 +71,14 @@ export async function upsertManagedSkillFile(
     }
   }
 
-  const nextContent = mergeWithManagedBlock(existing, generatedBlock);
+  const generatedBlock = extractManagedBlock(generatedContent) ?? generatedContent;
+  const generatedFrontmatter = extractFrontmatter(generatedContent);
+
+  let nextContent = mergeWithManagedBlock(existing, generatedBlock);
+  if (generatedFrontmatter) {
+    nextContent = applyFrontmatter(nextContent, generatedFrontmatter);
+  }
+
   const changed = existing !== nextContent;
 
   if (!dryRun && changed) {

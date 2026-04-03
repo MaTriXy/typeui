@@ -66,4 +66,71 @@ describe("upsertManagedSkillFile", () => {
     expect(content).toContain("Manual footer");
     expect(content).not.toContain("old content");
   });
+
+  it("writes frontmatter delimiters when generated content includes metadata", async () => {
+    const root = await makeTmpDir();
+    const result = await upsertManagedSkillFile(
+      root,
+      "cursor/skills/design-system/SKILL.md",
+      [
+        "---",
+        'name: "next-best-practices"',
+        'description: "Next.js best practices"',
+        "---",
+        "",
+        "<!-- TYPEUI_SH_MANAGED_START -->",
+        "hello",
+        "<!-- TYPEUI_SH_MANAGED_END -->"
+      ].join("\n")
+    );
+
+    expect(result.changed).toBe(true);
+    const content = await fs.readFile(result.absPath, "utf8");
+    expect(content.startsWith("---\n")).toBe(true);
+    expect(content).toContain('name: "next-best-practices"');
+    expect(content).toContain('description: "Next.js best practices"');
+    expect(content).toContain("hello");
+  });
+
+  it("replaces existing frontmatter when generated content includes metadata", async () => {
+    const root = await makeTmpDir();
+    const rel = "cursor/skills/design-system/SKILL.md";
+    const abs = path.join(root, rel);
+    await fs.mkdir(path.dirname(abs), { recursive: true });
+    await fs.writeFile(
+      abs,
+      [
+        "---",
+        'name: "old-skill"',
+        'description: "Old description"',
+        "---",
+        "",
+        "<!-- TYPEUI_SH_MANAGED_START -->",
+        "old content",
+        "<!-- TYPEUI_SH_MANAGED_END -->"
+      ].join("\n"),
+      "utf8"
+    );
+
+    await upsertManagedSkillFile(
+      root,
+      rel,
+      [
+        "---",
+        'name: "new-skill"',
+        'description: "New description"',
+        "---",
+        "",
+        "<!-- TYPEUI_SH_MANAGED_START -->",
+        "new content",
+        "<!-- TYPEUI_SH_MANAGED_END -->"
+      ].join("\n")
+    );
+
+    const content = await fs.readFile(abs, "utf8");
+    expect(content).toContain('name: "new-skill"');
+    expect(content).toContain('description: "New description"');
+    expect(content).toContain("new content");
+    expect(content).not.toContain("old-skill");
+  });
 });

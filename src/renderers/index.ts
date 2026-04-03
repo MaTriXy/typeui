@@ -1,10 +1,14 @@
-import { DesignSystemInput, PROVIDER_DETAILS, Provider, ProviderFile } from "../types";
-import { createManagedSkillBody } from "./shared";
+import { DesignSystemInput, PROVIDER_DETAILS, Provider, ProviderFile, SkillMetadata } from "../types";
+import { createManagedSkillFile } from "./shared";
 
-export function renderProviderFiles(design: DesignSystemInput, providers: Provider[]): ProviderFile[] {
+export function renderProviderFiles(
+  design: DesignSystemInput,
+  providers: Provider[],
+  metadata: SkillMetadata
+): ProviderFile[] {
   return providers.map((provider) => ({
     provider,
     relativePath: PROVIDER_DETAILS[provider].relativePath,
-    content: createManagedSkillBody(PROVIDER_DETAILS[provider].title, design)
+    content: createManagedSkillFile(PROVIDER_DETAILS[provider].title, design, metadata)
   }));
 }

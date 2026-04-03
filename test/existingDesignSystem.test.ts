@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { parseManagedDesignSystem } from "../src/generation/existingDesignSystem";
-import { createManagedSkillBody } from "../src/renderers/shared";
+import { parseManagedDesignSystem, parseSkillMetadata } from "../src/generation/existingDesignSystem";
+import { createManagedSkillBody, createManagedSkillFile } from "../src/renderers/shared";
 import { DesignSystemInput } from "../src/types";
 
 const sampleDesign: DesignSystemInput = {
@@ -25,5 +25,22 @@ describe("parseManagedDesignSystem", () => {
 
   it("returns null when managed block is missing", () => {
     expect(parseManagedDesignSystem("# Manual only")).toBeNull();
+  });
+});
+
+describe("parseSkillMetadata", () => {
+  it("parses frontmatter metadata from generated content", () => {
+    const content = createManagedSkillFile("Cursor", sampleDesign, {
+      name: "typeui-cli",
+      description: "Guide for generating design-system skill files."
+    });
+    expect(parseSkillMetadata(content)).toEqual({
+      name: "typeui-cli",
+      description: "Guide for generating design-system skill files."
+    });
+  });
+
+  it("returns null when frontmatter is missing", () => {
+    expect(parseSkillMetadata(createManagedSkillBody("Cursor", sampleDesign))).toBeNull();
   });
 });

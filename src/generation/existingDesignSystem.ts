@@ -1,8 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { MANAGED_BLOCK_END, MANAGED_BLOCK_START } from "../config";
-import { DesignSystemSchema } from "../domain/designSystemSchema";
-import { DesignSystemInput, PROVIDER_DETAILS, Provider } from "../types";
+import { DesignSystemSchema, SkillMetadataSchema } from "../domain/designSystemSchema";
+import { buildDefaultSkillMetadata } from "../skillMetadata";
+import { DesignSystemInput, PROVIDER_DETAILS, Provider, SkillMetadata } from "../types";
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -15,6 +16,29 @@ function extractManagedBlock(content: string): string | null {
     return null;
   }
   return content.slice(startIdx, endIdx + MANAGED_BLOCK_END.length);
+}
+
+function extractFrontmatter(content: string): string | null {
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  return match?.[1] ?? null;
+}
+
+function parseFrontmatterField(frontmatter: string, key: string): string | undefined {
+  const match = frontmatter.match(new RegExp(`^${escapeRegExp(key)}:\\s*(.+)$`, "m"));
+  return match?.[1]?.trim();
+}
+
+function parseQuotedYamlValue(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+    return trimmed
+      .slice(1, -1)
+      .replace(/\\(["\\])/g, "$1");
+  }
+  if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
+    return trimmed.slice(1, -1).replace(/''/g, "'");
+  }
+  return trimmed;
 }
 
 function extractSection(body: string, title: string, nextTitle: string): string | null {
@@ -91,17 +115,45 @@ export function parseManagedDesignSystem(content: string): DesignSystemInput | n
   });
 }
 
+export function parseSkillMetadata(content: string): SkillMetadata | null {
+  const frontmatter = extractFrontmatter(content);
+  if (!frontmatter) {
+    return null;
+  }
+
+  const name = parseFrontmatterField(frontmatter, "name");
+  const description = parseFrontmatterField(frontmatter, "description");
+  if (!name || !description) {
+    return null;
+  }
+
+  const parsed = SkillMetadataSchema.safeParse({
+    name: parseQuotedYamlValue(name),
+    description: parseQuotedYamlValue(description)
+  });
+  return parsed.success ? parsed.data : null;
+}
+
+export interface ExistingSkillState {
+  designSystem: DesignSystemInput;
+  metadata: SkillMetadata;
+}
+
 export async function loadExistingDesignSystem(
   projectRoot: string,
   providers: Provider[]
-): Promise<DesignSystemInput | null> {
+): Promise<ExistingSkillState | null> {
   for (const provider of providers) {
     const absPath = path.resolve(projectRoot, PROVIDER_DETAILS[provider].relativePath);
     try {
       const content = await fs.readFile(absPath, "utf8");
       const parsed = parseManagedDesignSystem(content);
       if (parsed) {
-        return parsed;
+        const metadata = parseSkillMetadata(content) ?? buildDefaultSkillMetadata(parsed.productName);
+        return {
+          designSystem: parsed,
+          metadata
+        };
       }
     } catch (error) {
       const e = error as NodeJS.ErrnoException;

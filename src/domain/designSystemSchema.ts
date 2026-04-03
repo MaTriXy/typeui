@@ -35,6 +35,24 @@ export const DesignSystemSchema = z.object({
   dontRules: z.array(z.string().min(1)).min(1)
 });
 
+export const SkillMetadataSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Skill name is required.")
+    .max(100, "Skill name is too long.")
+    .regex(
+      /^[a-z0-9](?:[a-z0-9-_]*[a-z0-9])?$/,
+      "Skill name must contain only lowercase letters, numbers, dashes, or underscores."
+    ),
+  description: z
+    .string()
+    .trim()
+    .min(3, "Skill description is too short.")
+    .max(240, "Skill description is too long.")
+    .refine((value) => !/[\r\n]/.test(value), "Skill description must be a single line.")
+});
+
 export const FlatDesignSystemPromptSchema = z.object({
   productName: z.string().min(2),
   brandSummary: z.string(),

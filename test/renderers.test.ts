@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderProviderFiles } from "../src/renderers";
-import { DesignSystemInput } from "../src/types";
+import { DesignSystemInput, SkillMetadata } from "../src/types";
 
 const sampleDesign: DesignSystemInput = {
   productName: "typeui.sh",
@@ -16,9 +16,14 @@ const sampleDesign: DesignSystemInput = {
   dontRules: ["use low contrast", "break spacing rhythm"]
 };
 
+const sampleMetadata: SkillMetadata = {
+  name: "typeui-cli",
+  description: "Guide for generating design-system skill files."
+};
+
 describe("renderProviderFiles", () => {
   it("renders paths for each selected provider", () => {
-    const files = renderProviderFiles(sampleDesign, ["codex", "cursor", "claude-code", "open-code"]);
+    const files = renderProviderFiles(sampleDesign, ["codex", "cursor", "claude-code", "open-code"], sampleMetadata);
     expect(files).toHaveLength(4);
     expect(files.map((f) => f.relativePath)).toEqual([
       ".codex/skills/design-system/SKILL.md",
@@ -26,6 +31,11 @@ describe("renderProviderFiles", () => {
       ".claude/skills/design-system/SKILL.md",
       ".opencode/skills/design-system/SKILL.md"
     ]);
+    expect(files[0].content).toContain("---");
+    expect(files[0].content).toContain('name: "typeui-cli"');
+    expect(files[0].content).toContain('description: "Guide for generating design-system skill files."');
+    expect(files[0].content).toContain("metadata:");
+    expect(files[0].content).toContain("author: typeui.sh");
     expect(files[0].content).toContain("TYPEUI_SH_MANAGED_START");
     expect(files[0].content).toContain("typeui.sh");
   });

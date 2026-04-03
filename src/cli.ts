@@ -10,7 +10,8 @@ import {
   promptDesignSystem,
   promptDesignSystemFields,
   promptDesignSystemUpdates,
-  promptProviders
+  promptProviders,
+  promptSkillMetadata
 } from "./prompts/designSystem";
 import { promptRegistrySpecSelection } from "./prompts/registry";
 import { RegistrySlugSchema } from "./domain/designSystemSchema";
@@ -20,6 +21,7 @@ import { runPull } from "./generation/runPull";
 import { listRegistrySpecs, pullSkillMarkdown } from "./registry/registryClient";
 import { ALWAYS_INCLUDED_PROVIDERS, DesignSystemInput, Provider, SUPPORTED_PROVIDERS } from "./types";
 import { printBanner } from "./ui/banner";
+import { buildDefaultSkillMetadata } from "./skillMetadata";
 
 function parseProviderOption(raw?: string): Provider[] | null {
   if (!raw) {
@@ -52,12 +54,17 @@ function printResults(mode: "generated" | "updated" | "preview" | "pulled", resu
   }
 }
 
-async function generateLike(mode: "generated" | "updated" | "preview", options: { providers?: string; dryRun?: boolean }) {
+async function generateLike(
+  action: "generate" | "update",
+  mode: "generated" | "updated" | "preview",
+  options: { providers?: string; dryRun?: boolean }
+) {
   const selectedProviders = parseProviderOption(options.providers) ?? (await promptProviders());
   const providers = [...new Set<Provider>([...ALWAYS_INCLUDED_PROVIDERS, ...selectedProviders])];
   let designSystem: DesignSystemInput;
+  let metadata = buildDefaultSkillMetadata("typeui.sh");
 
-  if (mode === "updated") {
+  if (action === "update") {
     const existing = await loadExistingDesignSystem(process.cwd(), providers);
     if (!existing) {
       throw new Error(
@@ -65,17 +72,20 @@ async function generateLike(mode: "generated" | "updated" | "preview", options: 
       );
     }
 
+    metadata = await promptSkillMetadata(existing.metadata);
     const fields = await promptDesignSystemFields();
-    const updates = await promptDesignSystemUpdates(existing, fields);
-    designSystem = { ...existing, ...updates };
+    const updates = await promptDesignSystemUpdates(existing.designSystem, fields);
+    designSystem = { ...existing.designSystem, ...updates };
   } else {
     designSystem = await promptDesignSystem("typeui.sh");
+    metadata = await promptSkillMetadata(buildDefaultSkillMetadata(designSystem.productName));
   }
 
   const results = await runGeneration({
     projectRoot: process.cwd(),
     providers,
     designSystem,
+    metadata,
     dryRun: Boolean(options.dryRun)
   });
   printResults(mode, results);
@@ -144,7 +154,7 @@ program
   .option("-p, --providers <providers>", "Comma-separated providers")
   .option("--dry-run", "Preview file changes without writing")
   .action(async (options) => {
-    await generateLike(options.dryRun ? "preview" : "generated", options);
+    await generateLike("generate", options.dryRun ? "preview" : "generated", options);
   });
 
 program
@@ -153,7 +163,7 @@ program
   .option("-p, --providers <providers>", "Comma-separated providers")
   .option("--dry-run", "Preview file changes without writing")
   .action(async (options) => {
-    await generateLike(options.dryRun ? "preview" : "updated", options);
+    await generateLike("update", options.dryRun ? "preview" : "updated", options);
   });
 
 program
