@@ -59,17 +59,25 @@ If you want to use this locally these are the commands you need to run:
 ```bash
 npm install
 npm run build
+```
+
+Then use the commands in your terminal:
+
+```
 node dist/cli.js --help
+node dist/cli.js generate
+node dist/cli.js list
+node dist/cli.js pull [slug]
 ```
 
 ## License
 
-The CLI is open-source under the MIT License.
+The CLI and public registry is open-source under the MIT License.
 
 ## Pro version
 
-Get access to curated design system files by getting the [pro version](https://www.typeui.sh/#pricing) and supporting our work.
+Get access to enhanched design skill files and a private Discord community by getting the [pro version](https://www.typeui.sh/#pricing) and thus supporting our open-source work.
 
 ## Sponsors
 
-If you'd like to become a sponsor of the project, please [contact us](https://www.bergside.com/contact) on our company website.
+If you'd like to become a sponsor of the project, please check out the [sponsorship page](https://www.typeui.sh/sponsor) on our website.
