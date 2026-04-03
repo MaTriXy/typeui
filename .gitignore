@@ -12,3 +12,4 @@ coverage
 /codex
 /opencode
 /mistral-vibe
+.package-lock.json
