@@ -21,13 +21,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bergside/typeui.sh"
+    "url": "https://github.com/bergside/typeui"
   },
   "keywords": [
     "cli",
-    "design-system",
+    "design system",
     "skills",
-    "ai"
+    "ai",
+    "design md",
+    "design skills",
+    "claude skills",
+    "ai skills",
+    "ui",
+    "ux"
   ],
   "author": "https://bergside.com",
   "license": "MIT License",
