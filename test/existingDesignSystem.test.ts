@@ -10,7 +10,6 @@ const sampleDesign: DesignSystemInput = {
   typographyScale: "12/14/16/20/24/32",
   colorPalette: "primary, neutral, semantic",
   spacingScale: "4/8/12/16/24/32",
-  componentFamilies: ["buttons", "inputs", "cards"],
   accessibilityRequirements: "WCAG 2.2 AA",
   writingTone: "clear and direct",
   doRules: ["use semantic tokens", "preserve hierarchy"],

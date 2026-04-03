@@ -37,12 +37,6 @@ Use `typeui.sh` to generate, update, list, and pull design-system skill files fo
   - Pull a specific registry skill and write it to selected provider paths.
 - `npx typeui.sh list`
   - List available registry slugs, show preview links, and pull one selection.
-- `npx typeui.sh verify`
-  - Verify and cache license state for license-aware workflows.
-- `npx typeui.sh license`
-  - Show local cached license summary.
-- `npx typeui.sh clear-cache`
-  - Clear local `~/.typeui-sh` cache state.
 
 ## Local Dev Invocation (This Repo)
 

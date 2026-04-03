@@ -158,7 +158,6 @@ export interface DesignSystemInput {
   typographyScale: string;
   colorPalette: string;
   spacingScale: string;
-  componentFamilies: string[];
   accessibilityRequirements: string;
   writingTone: string;
   doRules: string[];
@@ -177,7 +176,6 @@ export const DESIGN_SYSTEM_FIELDS = [
   "typographyScale",
   "colorPalette",
   "spacingScale",
-  "componentFamilies",
   "accessibilityRequirements",
   "writingTone",
   "doRules",
@@ -190,12 +188,4 @@ export interface ProviderFile {
   provider: Provider;
   relativePath: string;
   content: string;
-}
-
-export interface LicenseCacheRecord {
-  productId: string;
-  verifiedAt: string;
-  expiresAt: string;
-  licenseKeyFingerprint: string;
-  licenseKey?: string;
 }

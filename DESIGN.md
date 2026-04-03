@@ -42,16 +42,6 @@ One paragraph describing the system objective and target product experience.
 - Spacing scale: [token list]
 - Radius/shadow/motion tokens: [if applicable]
 
-## Component Families
-- buttons
-- inputs
-- forms
-- navigation
-- overlays
-- feedback
-- data display
-- etc.
-
 ## Accessibility
 - Target: WCAG 2.2 AA
 - Keyboard-first interactions required
@@ -107,7 +97,6 @@ concise, confident, implementation-focused
 - `[brand-or-scope]` in `name`
 - System name and mission
 - Token values (typography, colors, spacing, motion)
-- Component family list based on product scope
 - Any framework-specific implementation notes
 
 ## Optional Extensions

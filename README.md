@@ -31,9 +31,6 @@ Check out all [design systems](https://typeui.sh/design-skills) that can be pull
 | `update` | Update existing managed skill content in generated files. |
 | `pull <slug>` | Pull a registry skill from `bergside/awesome-design-skills` and write it to selected provider paths. |
 | `list` | Show available registry specs from `bergside/awesome-design-skills` (with typeui.sh preview links), then pull one automatically. |
-| `verify` | Verify your license key (pro version) and cache local license status. |
-| `license` | Show local cached license status. |
-| `clear-cache` | Remove local cache state (`~/.typeui-sh`). |
 
 Shared options for `generate` and `update`:
 
@@ -49,6 +46,31 @@ Shared options for `list`:
 
 - `-p, --providers <providers>` (comma-separated providers passed through to auto-pull)
 - `--dry-run` (preview pull file changes without writing)
+
+## Design Skill File Structure
+
+Generated files include YAML frontmatter plus a managed content block between:
+
+- `<!-- TYPEUI_SH_MANAGED_START -->`
+- `<!-- TYPEUI_SH_MANAGED_END -->`
+
+Within the managed block, sections are structured like this:
+
+| Section | What it does |
+| --- | --- |
+| `Mission` | Defines the design-system objective and expected output quality for the agent. |
+| `Brand` | Captures product context and brand direction to anchor decisions. |
+| `Style Foundations` | Defines core visual tokens and constraints (visual style, typography, color palette, spacing). |
+| `Accessibility` | States accessibility standards and non-negotiable requirements. |
+| `Writing Tone` | Sets tone/style for generated guidance language. |
+| `Rules: Do` | Lists required implementation practices to follow. |
+| `Rules: Don't` | Lists anti-patterns and prohibited behaviors. |
+| `Expected Behavior` | Sets expectations for decision-making and trade-off handling. |
+| `Guideline Authoring Workflow` | Gives the ordered process the agent should follow when producing guidelines. |
+| `Required Output Structure` | Enforces the final response format for consistency and completeness. |
+| `Component Rule Expectations` | Defines required interaction/state details in component guidance. |
+| `Quality Gates` | Adds validation criteria for clarity, testability, and consistency. |
+| `Example Constraint Language` | Standardizes wording strength (`must` vs `should`) and constraint style. |
 
 For local development:
 

@@ -2,11 +2,6 @@
 import path from "node:path";
 import { Command } from "commander";
 import {
-  clearCachedLicenseState,
-  getCachedLicenseSummary,
-  verifyAndCacheLicenseFromPrompt
-} from "./licensing/licenseService";
-import {
   promptDesignSystem,
   promptDesignSystemFields,
   promptDesignSystemUpdates,
@@ -182,29 +177,6 @@ program
   .option("--dry-run", "Preview file changes without writing")
   .action(async (options) => {
     await listLike(options);
-  });
-
-program
-  .command("verify")
-  .description("Verify your license key and cache local license status.")
-  .action(async () => {
-    const record = await verifyAndCacheLicenseFromPrompt();
-    console.log(`License cached (${record.licenseKeyFingerprint}) until ${record.expiresAt}`);
-  });
-
-program
-  .command("license")
-  .description("Show local cached license status.")
-  .action(async () => {
-    console.log(await getCachedLicenseSummary());
-  });
-
-program
-  .command("clear-cache")
-  .description("Clear all local typeui.sh cache state.")
-  .action(async () => {
-    await clearCachedLicenseState();
-    console.log("Cleared local cache state.");
   });
 
 program.parseAsync().catch((error: unknown) => {

@@ -52,7 +52,6 @@ const designFieldChoices: { name: string; value: DesignSystemField }[] = [
   { name: "Typography scale", value: "typographyScale" },
   { name: "Color palette", value: "colorPalette" },
   { name: "Spacing scale", value: "spacingScale" },
-  { name: "Component families", value: "componentFamilies" },
   { name: "Accessibility requirements", value: "accessibilityRequirements" },
   { name: "Writing tone", value: "writingTone" },
   { name: "DO rules", value: "doRules" },
@@ -344,52 +343,6 @@ const SPACING_SCALE_OPTIONS = [
   "comfortable density mode"
 ];
 
-const COMPONENT_FAMILY_OPTIONS = [
-  "buttons",
-  "inputs",
-  "forms",
-  "selects/comboboxes",
-  "checkboxes/radios/switches",
-  "textareas",
-  "date/time pickers",
-  "file uploaders",
-  "cards",
-  "tables",
-  "data lists",
-  "data grids",
-  "charts",
-  "stats/metrics",
-  "badges/chips",
-  "avatars",
-  "breadcrumbs",
-  "pagination",
-  "steppers",
-  "modals",
-  "drawers/sheets",
-  "tooltips",
-  "popovers/menus",
-  "navigation",
-  "sidebars",
-  "top bars/headers",
-  "command palette",
-  "tabs",
-  "accordions",
-  "carousels",
-  "progress indicators",
-  "skeletons",
-  "alerts/toasts",
-  "notifications center",
-  "search",
-  "empty states",
-  "onboarding",
-  "authentication screens",
-  "settings pages",
-  "documentation layouts",
-  "feedback components",
-  "pricing blocks",
-  "data visualization wrappers"
-];
-
 const ACCESSIBILITY_OPTIONS = [
   "WCAG 2.2 AA",
   "keyboard-first interactions",
@@ -597,11 +550,6 @@ export async function promptDesignSystem(defaultProductName = "typeui.sh"): Prom
     presets: SPACING_SCALE_OPTIONS,
     defaultChoice: "4/8/12/16/24/32"
   });
-  const componentFamilies = await promptPresetSelection({
-    message: "Select component families to prioritize:",
-    presets: COMPONENT_FAMILY_OPTIONS,
-    defaultSelected: COMPONENT_FAMILY_OPTIONS
-  });
   const accessibilityRequirements = await promptPresetSelection({
     message: "Select accessibility requirements:",
     presets: ACCESSIBILITY_OPTIONS,
@@ -638,7 +586,6 @@ export async function promptDesignSystem(defaultProductName = "typeui.sh"): Prom
     typographyScale,
     colorPalette,
     spacingScale,
-    componentFamilies,
     accessibilityRequirements: accessibilityRequirements.join(", "),
     writingTone: writingTone.join(", "),
     doRules,
@@ -718,16 +665,6 @@ export async function promptDesignSystemUpdates(
           defaultChoice: defaults.selected[0] ?? defaults.custom[0] ?? "4/8/12/16/24/32"
         });
         updates.spacingScale = value;
-        break;
-      }
-      case "componentFamilies": {
-        const defaults = matchPresetDefaults(current.componentFamilies.join(", "), COMPONENT_FAMILY_OPTIONS);
-        updates.componentFamilies = await promptPresetSelection({
-          message: "Select component families to prioritize:",
-          presets: COMPONENT_FAMILY_OPTIONS,
-          defaultSelected: defaults.selected.length > 0 ? defaults.selected : COMPONENT_FAMILY_OPTIONS,
-          defaultCustom: defaults.custom
-        });
         break;
       }
       case "accessibilityRequirements": {

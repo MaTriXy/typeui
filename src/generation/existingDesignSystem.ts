@@ -78,7 +78,6 @@ export function parseManagedDesignSystem(content: string): DesignSystemInput | n
   const typographyScale = extractStyleValue(managed, "Typography scale");
   const colorPalette = extractStyleValue(managed, "Color palette");
   const spacingScale = extractStyleValue(managed, "Spacing scale");
-  const componentFamilies = extractListSection(managed, "## Component Families", "## Accessibility");
   const accessibilityRequirements = extractSection(managed, "## Accessibility", "## Writing Tone");
   const writingTone = extractSection(managed, "## Writing Tone", "## Rules: Do");
   const doRules = extractListSection(managed, "## Rules: Do", "## Rules: Don't");
@@ -91,7 +90,6 @@ export function parseManagedDesignSystem(content: string): DesignSystemInput | n
     !typographyScale ||
     !colorPalette ||
     !spacingScale ||
-    !componentFamilies ||
     !accessibilityRequirements ||
     !writingTone ||
     !doRules ||
@@ -107,7 +105,6 @@ export function parseManagedDesignSystem(content: string): DesignSystemInput | n
     typographyScale,
     colorPalette,
     spacingScale,
-    componentFamilies,
     accessibilityRequirements,
     writingTone,
     doRules,
