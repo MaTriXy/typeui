@@ -85,7 +85,7 @@ export function parseManagedDesignSystem(content: string): DesignSystemInput | n
 
   if (
     !productName ||
-    !brandSummary ||
+    brandSummary === null ||
     !visualStyle ||
     !typographyScale ||
     !colorPalette ||

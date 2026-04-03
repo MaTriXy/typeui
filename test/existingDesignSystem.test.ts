@@ -22,6 +22,17 @@ describe("parseManagedDesignSystem", () => {
     expect(parseManagedDesignSystem(content)).toEqual(sampleDesign);
   });
 
+  it("accepts an empty brand section", () => {
+    const content = createManagedSkillBody("Cursor", {
+      ...sampleDesign,
+      brandSummary: ""
+    });
+    expect(parseManagedDesignSystem(content)).toEqual({
+      ...sampleDesign,
+      brandSummary: ""
+    });
+  });
+
   it("returns null when managed block is missing", () => {
     expect(parseManagedDesignSystem("# Manual only")).toBeNull();
   });
